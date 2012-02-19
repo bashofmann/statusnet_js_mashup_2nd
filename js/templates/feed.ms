@@ -1,3 +1,20 @@
+<form action="/statusnet_js_mashup_2nd/Feed" method="post" class="form-horizontal">
+    <legend>Add status update</legend>
+    <fieldset>
+        <div class="control-group">
+            <label class="control-label" for="input_status">Status update</label>
+            <div class="controls">
+                <textarea name="status" class="input-xlarge" id="input_status" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">send</button>
+        </div>
+    </fieldset>
+</form>
+
+<legend>Feed</legend>
+
 {{#feed}}
   <div class="well">
       <h3>

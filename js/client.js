@@ -23,6 +23,20 @@ var app = Sammy('#main', function() {
         this.redirect('/statusnet_js_mashup_2nd');
     });
     
+    this.post('/statusnet_js_mashup_2nd/Feed', function() {
+       var that = this;
+       $.ajax({
+          url: 'http://dev.status.net:8080/index.php/api/statuses/update.json?oauth_token=' + oauth2.authParameters['access_token'],
+          type: 'POST',
+          data: {
+            'status': that.params['status']
+          },
+          success: function() {
+              that.redirect('/statusnet_js_mashup_2nd');
+          }
+       });
+    });
+    
     this.bind('getFeed', function() {
         var that = this;
         
