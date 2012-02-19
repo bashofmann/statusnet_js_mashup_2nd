@@ -19,6 +19,12 @@
   <div class="well feed-item">
       <h3>
         {{{statusnet_html}}}
+        {{#geo}}
+        <a href="http://maps.google.com/maps?q={{coordinates.0}},{{coordinates.1}}&z=16"
+            class="attachment thumbnail" rel="nofollow external">
+            http://maps.google.com/maps?q={{coordinates.0}},{{coordinates.1}}&z=16
+        </a>
+        {{/geo}}
         {{#user}}
         <small>
             <a href="{{statusnet_profile_url}}">
