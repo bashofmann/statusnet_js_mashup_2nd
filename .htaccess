@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^.*\.(css|js|ms|html|png)$ - [L]
+RewriteRule ^(.*)$ index.html [QSA,L,NC]
