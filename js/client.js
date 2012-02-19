@@ -115,6 +115,11 @@ var app = Sammy('#main', function() {
                       'coordinates':$(this).find('georss\\:point').text().split(' ')
                   }
                }].concat(feed);
+               window.webkitNotifications.createNotification(
+                    xmlDoc.find('author').find('link[rel="avatar"]').attr('href'),
+                    xmlDoc.find('author').find('poco\\:displayName').text(), 
+                    $(this).find('content').text()
+               ).show();
                that.trigger('renderFeed');
             });
         });
