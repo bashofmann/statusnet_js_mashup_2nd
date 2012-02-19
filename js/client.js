@@ -5,6 +5,19 @@ var app = Sammy('#main', function() {
     this.get('/statusnet_js_mashup_2nd', function() {
         this.trigger('getFeed');
     });
+    this.get('/statusnet_js_mashup_2nd/', function() {
+        this.trigger('getFeed');
+    });
+    this.get('/statusnet_js_mashup_2nd/Widget', function() {
+        var that = this;
+        $.ajax({
+            url: 'http://localhost:8080/statusnet_js_mashup_2nd/backend/widget.json',
+            success: function(result) {
+                that.widget = result.html;
+                that.partial('/statusnet_js_mashup_2nd/js/templates/widget.ms');
+            }
+       });
+    });
     this.get('/statusnet_js_mashup_2nd/Login', function() {
         if (oauth2.authParameters && oauth2.authParameters['access_token']) {
             this.redirect('/statusnet_js_mashup_2nd');
@@ -94,7 +107,7 @@ var app = Sammy('#main', function() {
 });
 
 jQuery(function() {
-    app.run('/statusnet_js_mashup_2nd');
+    app.run();
 });
 
 var oauth2 = {
