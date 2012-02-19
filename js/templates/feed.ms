@@ -16,9 +16,9 @@
 <legend>Feed</legend>
 
 {{#feed}}
-  <div class="well">
+  <div class="well feed-item">
       <h3>
-        {{text}} 
+        {{{statusnet_html}}}
         {{#user}}
         <small>
             <a href="{{statusnet_profile_url}}">

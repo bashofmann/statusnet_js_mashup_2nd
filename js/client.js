@@ -1,4 +1,5 @@
-var app = Sammy('#main', function() {    
+var app = Sammy('#main', function() {
+    var embeds = [];
     this.use('Mustache', 'ms');
     
     this.get('/statusnet_js_mashup_2nd', function() {
@@ -46,6 +47,33 @@ var app = Sammy('#main', function() {
               that.feed = response;
               that.partial('/statusnet_js_mashup_2nd/js/templates/feed.ms');
           }
+        });
+    });
+    
+    this.bind('changed', function() {
+        embeds = [];
+        $('div.feed-item a').removeClass('thumbnail');
+        $('div.feed-item div.embed').remove();
+        $('div.feed-item blockquote.embed-preview').remove();
+        $('div.feed-item h3').embedly({
+            key:'87d885aab65e11e0a0724040d3dc5c07',
+            maxWidth: 450,
+            wmode: 'transparent'
+        }, function (oembed, dict) {
+            if (oembed == null) {
+                return;
+            }
+            console.log(oembed);
+            var output = "<blockquote class='embed-preview'><a class='embedly' id='embed-" + embeds.length + "' href='javascript:;'><img src='" + oembed.thumbnail_url + "' /></a>";
+            output += "<small><a href='" + oembed.provider_url + "'>" + oembed.provider_name + "</a> &sdot; " + oembed.title + "</small></blockquote>";
+            embeds.push(oembed['code']);
+            $(dict["node"]).parent().after(output);
+        });
+        $('a.embedly').live("click", function (e) {
+            var embedId;
+            e.preventDefault();
+            embedId = $(this).attr('id').replace('embed-', '');
+            $(this).parents('blockquote').replaceWith(embeds[embedId]);
         });
     });
     
