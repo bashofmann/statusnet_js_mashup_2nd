@@ -13,6 +13,21 @@
     </fieldset>
 </form>
 
+<form class="form-horizontal" method="post" action="/statusnet_js_mashup_2nd/Share">
+    <legend>Share this mashup</legend>
+    <fieldset>
+        <div class="control-group">
+            <label class="control-label" for="input_status">Target hostname</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" name="hostname"/>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">share</button>
+        </div>
+    </fieldset>
+</form>
+
 <legend>Feed</legend>
 
 {{#feed}}

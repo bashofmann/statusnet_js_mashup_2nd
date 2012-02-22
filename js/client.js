@@ -19,6 +19,16 @@ var app = Sammy('#main', function() {
             }
        });
     });
+    this.post('/statusnet_js_mashup_2nd/Share', function() {
+	    var that = this;
+		$.ajax({
+			url: 'http://localhost:8000?share.hostname=' + encodeURIComponent(this.params['hostname']) + '&url=' + encodeURIComponent(window.location),
+			success: function(response) {
+				window.open(response);
+				that.redirect('/statusnet_js_mashup_2nd');
+			}
+		});
+	});
     this.get('/statusnet_js_mashup_2nd/Login', function() {
         if (oauth2.authParameters && oauth2.authParameters['access_token']) {
             this.redirect('/statusnet_js_mashup_2nd');
