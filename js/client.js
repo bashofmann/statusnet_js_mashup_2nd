@@ -13,7 +13,7 @@ var app = Sammy('#main', function() {
         $.ajax({
             url: 'http://localhost:8080/statusnet_js_mashup_2nd/backend/widget.json',
             success: function(result) {
-                that.widget = result.html;
+                that.widget = html_sanitize(result.html);
                 that.partial('/statusnet_js_mashup_2nd/js/templates/widget.ms');
             }
        });
