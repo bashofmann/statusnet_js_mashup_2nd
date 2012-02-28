@@ -1,5 +1,6 @@
 var app = Sammy('#main', function() {
     var embeds = [];
+    var feed = [];
     this.use('Mustache', 'ms');
     
     this.get('/statusnet_js_mashup_2nd', function() {
@@ -57,10 +58,16 @@ var app = Sammy('#main', function() {
         $.ajax({
           url: 'http://dev.status.net:8080/index.php/api/statuses/home_timeline.json?oauth_token=' + oauth2.authParameters['access_token'],
           success: function(response) {
-              that.feed = response;
-              that.partial('/statusnet_js_mashup_2nd/js/templates/feed.ms');
+              feed = response;
+              that.trigger('renderFeed');
+              that.trigger('connect');
           }
         });
+    });
+    
+    this.bind('renderFeed', function() {
+        this.feed = feed;
+        this.partial('/statusnet_js_mashup_2nd/js/templates/feed.ms');
     });
     
     this.bind('changed', function() {
@@ -88,6 +95,54 @@ var app = Sammy('#main', function() {
             embedId = $(this).attr('id').replace('embed-', '');
             $(this).parents('blockquote').replaceWith(embeds[embedId]);
         });
+    });
+
+    this.bind('connect', function() {
+        var that = this;
+        var socket = new io.connect('http://localhost', {port: 8000, rememberTransport: false});
+        socket.on('message', function(obj){
+            xmlDoc=$(obj);
+            xmlDoc.find('entry').each(function() {
+               feed = [{
+                  'statusnet_html': $(this).find('content').text(),
+                  'created_at': $(this).find('published').text(),
+                  'source': $(this).find('statusnet\\:notice_info').attr('source'),
+                  'user': {
+                      'name': xmlDoc.find('author').find('poco\\:displayName').text(),
+                      'statusnet_profile_url': xmlDoc.find('author').find('uri').text()
+                  },
+                  'geo': {
+                      'coordinates':$(this).find('georss\\:point').text().split(' ')
+                  }
+               }].concat(feed);
+               that.trigger('renderFeed');
+            });
+        });
+
+        socket.on('connect', function(){
+            console.log('connected');
+            that.trigger('subscribe');
+        });
+        socket.on('disconnect', function(){ console.log('disconnected'); });
+        socket.on('reconnect', function(){ console.log('reconnected'); });
+    });
+    this.bind('subscribe', function() {
+       console.log('subscribe to feed');
+       var feed = 'http://dev.status.net:8080/index.php/api/statuses/user_timeline/' + oauth2.authParameters['user_id'] + '.atom';
+       var hub = 'http://dev.status.net:8080/index.php/main/push/hub';
+       $.ajax({
+          url: hub,
+          type: 'POST',
+          data: {
+              'hub.topic': feed,
+              'hub.callback': 'http://localhost:8000/',
+              'hub.mode': 'subscribe',
+              'hub.verify': 'async'
+          },
+          success: function(response) {
+              console.log(response);
+          }
+       });
     });
     
     var checkLoggedIn = function(callback) {
