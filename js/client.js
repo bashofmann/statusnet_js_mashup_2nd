@@ -3,61 +3,58 @@ var app = Sammy('#main', function() {
     var feed = [];
     this.use('Mustache', 'ms');
     
-    this.get('/statusnet_js_mashup_2nd', function() {
+    this.get('/', function() {
         this.trigger('getFeed');
     });
-    this.get('/statusnet_js_mashup_2nd/', function() {
-        this.trigger('getFeed');
-    });
-    this.get('/statusnet_js_mashup_2nd/Widget', function() {
+    this.get('/Widget', function() {
         var that = this;
         $.ajax({
-            url: 'http://localhost:8080/statusnet_js_mashup_2nd/backend/widget.json',
+            url: 'http://localhost:8280/backend/widget.json',
             success: function(result) {
                 that.widget = html_sanitize(result.html);
-                that.partial('/statusnet_js_mashup_2nd/js/templates/widget.ms');
+                that.partial('/js/templates/widget.ms');
             }
        });
     });
-    this.post('/statusnet_js_mashup_2nd/Share', function() {
+    this.post('/Share', function() {
 	    var that = this;
 		$.ajax({
-			url: 'http://localhost:8000?share.hostname=' + encodeURIComponent(this.params['hostname']) + '&url=' + encodeURIComponent(window.location),
+			url: 'http://bashofmann.js_mashup_backend.jit.su?share.hostname=' + encodeURIComponent(this.params['hostname']) + '&url=' + encodeURIComponent(window.location),
 			success: function(response) {
 				window.open(response);
-				that.redirect('/statusnet_js_mashup_2nd');
+				that.redirect('/');
 			}
 		});
 	});
-    this.get('/statusnet_js_mashup_2nd/Login', function() {
+    this.get('/Login', function() {
         if (oauth2.authParameters && oauth2.authParameters['access_token']) {
-            this.redirect('/statusnet_js_mashup_2nd');
+            this.redirect('/');
         }
-        this.partial('/statusnet_js_mashup_2nd/js/templates/login.ms');
+        this.partial('/js/templates/login.ms');
     });
-    this.post('/statusnet_js_mashup_2nd/Login', function() {
-        var consumerKey = '71b454c797a58e8de5df33137e95cb8c';
-        window.open('http://dev.status.net:8080/index.php/api/oauth2/authorize?response_toke=token&client_id=' + consumerKey, 'StatusNetLoginPopup', 'width=400&height=400');
+    this.post('/Login', function() {
+        var consumerKey = '6dc57f6a39112709b9e3af9c67cc1a62';
+        window.open('http://statusnet.cloudcontrolled.com/api/oauth2/authorize?response_toke=token&client_id=' + consumerKey, 'StatusNetLoginPopup', 'width=400&height=400');
     });
     this.bind('loggedIn', function() {
-        this.redirect('/statusnet_js_mashup_2nd');
+        this.redirect('/');
     });
-    this.get('/statusnet_js_mashup_2nd/Logout', function() {
+    this.get('/Logout', function() {
         $('#logout-link').hide();
         oauth2.deleteAccessToken();
-        this.redirect('/statusnet_js_mashup_2nd');
+        this.redirect('/');
     });
     
-    this.post('/statusnet_js_mashup_2nd/Feed', function() {
+    this.post('/Feed', function() {
        var that = this;
        $.ajax({
-          url: 'http://dev.status.net:8080/index.php/api/statuses/update.json?oauth_token=' + oauth2.authParameters['access_token'],
+          url: 'http://statusnet.cloudcontrolled.com/api/statuses/update.json?oauth_token=' + oauth2.authParameters['access_token'],
           type: 'POST',
           data: {
             'status': that.params['status']
           },
           success: function() {
-              that.redirect('/statusnet_js_mashup_2nd');
+              that.redirect('/');
           }
        });
     });
@@ -66,7 +63,7 @@ var app = Sammy('#main', function() {
         var that = this;
         
         $.ajax({
-          url: 'http://dev.status.net:8080/index.php/api/statuses/home_timeline.json?oauth_token=' + oauth2.authParameters['access_token'],
+          url: 'http://statusnet.cloudcontrolled.com/api/statuses/home_timeline.json?oauth_token=' + oauth2.authParameters['access_token'],
           success: function(response) {
               feed = response;
               that.trigger('renderFeed');
@@ -77,7 +74,7 @@ var app = Sammy('#main', function() {
     
     this.bind('renderFeed', function() {
         this.feed = feed;
-        this.partial('/statusnet_js_mashup_2nd/js/templates/feed.ms');
+        this.partial('/js/templates/feed.ms');
     });
     
     this.bind('changed', function() {
@@ -109,7 +106,7 @@ var app = Sammy('#main', function() {
 
     this.bind('connect', function() {
         var that = this;
-        var socket = new io.connect('http://localhost', {port: 8000, rememberTransport: false});
+        var socket = new io.connect('http://bashofmann.js_mashup_backend.jit.su', {port: 80, rememberTransport: false});
         socket.on('message', function(obj){
             xmlDoc=$(obj);
             xmlDoc.find('entry').each(function() {
@@ -143,14 +140,14 @@ var app = Sammy('#main', function() {
     });
     this.bind('subscribe', function() {
        console.log('subscribe to feed');
-       var feed = 'http://dev.status.net:8080/index.php/api/statuses/user_timeline/' + oauth2.authParameters['user_id'] + '.atom';
-       var hub = 'http://dev.status.net:8080/index.php/main/push/hub';
+       var feed = 'http://statusnet.cloudcontrolled.com/api/statuses/user_timeline/' + oauth2.authParameters['user_id'] + '.atom';
+       var hub = 'http://statusnet.cloudcontrolled.com/main/push/hub';
        $.ajax({
           url: hub,
           type: 'POST',
           data: {
               'hub.topic': feed,
-              'hub.callback': 'http://localhost:8000/',
+              'hub.callback': 'http://bashofmann.js_mashup_backend.jit.su/',
               'hub.mode': 'subscribe',
               'hub.verify': 'async'
           },
@@ -161,12 +158,12 @@ var app = Sammy('#main', function() {
     });
     
     var checkLoggedIn = function(callback) {
-        if (this.path === '/statusnet_js_mashup_2nd/Login') {
+        if (this.path === '/Login') {
             callback();
         }
         if (! oauth2.isLoggedIn()) {
             $('#logout-link').hide();
-            this.redirect('/statusnet_js_mashup_2nd/Login');
+            this.redirect('/Login');
         } else {
             $('#logout-link').show();
             callback();

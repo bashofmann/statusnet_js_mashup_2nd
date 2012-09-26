@@ -35,18 +35,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/statusnet_js_mashup_2nd">Mashing up JavaScript</a>
+          <a class="brand" href="/">Mashing up JavaScript</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li><a href="/statusnet_js_mashup_2nd">Home</a></li>
-              <li><a href="/statusnet_js_mashup_2nd/Widget">Widget</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/Widget">Widget</a></li>
             </ul>
             <ul class="nav pull-right">
                 <li>
-                    <a id="logout-link" class="btn-danger" style="display:none;" href="/statusnet_js_mashup_2nd/Logout">
+                    <a id="logout-link" class="btn-danger" style="display:none;" href="/Logout">
                         Logout
                     </a>
                 </li>
+		<li>
+		    <a href="javascript:window.webkitNotifications.requestPermission();">Permissions</a>
+		</li>
             </ul>
           </div>
         </div>
@@ -63,7 +66,7 @@
     <script type="text/javascript" src="js/lib/sammy.js"></script>
     <script type="text/javascript" src="js/lib/sammy.mustache.js"></script>
     <script type="text/javascript" src="js/lib/html-sanitizer.js"></script>
-    <script type="text/javascript" src="http://localhost:8000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="http://bashofmann.js_mashup_backend.jit.su/socket.io/socket.io.js"></script>
     
     <script type="text/javascript" src="js/client.js"></script>
   </body>

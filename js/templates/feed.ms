@@ -1,4 +1,4 @@
-<form action="/statusnet_js_mashup_2nd/Feed" method="post" class="form-horizontal">
+<form action="/Feed" method="post" class="form-horizontal">
     <legend>Add status update</legend>
     <fieldset>
         <div class="control-group">
@@ -13,7 +13,7 @@
     </fieldset>
 </form>
 
-<form class="form-horizontal" method="post" action="/statusnet_js_mashup_2nd/Share">
+<form class="form-horizontal" method="post" action="/Share">
     <legend>Share this mashup</legend>
     <fieldset>
         <div class="control-group">
